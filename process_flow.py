@@ -2,31 +2,43 @@ import numpy as np
 import pandas as pd
 import csv
 
-def extract_process_flow(filename):
-    f = open(filename, 'r')
+def extract_column(filename, colname, chunksize=10000):
+    chunker = pd.read_csv(filename, chunksize=chunksize)
+    piece = chunker.__next__()
+    if colname not in piece.columns:
+        raise ValueError('not a valid column name', colname, filename)
+    col = piece[colname]
+    for piece in chunker:
+        col = pd.concat([col, piece[colname]])
+    return col
 
-    # First line of the csv is the column names
-    # Trim newline, split, then remove first item "Id"
-    colnames = f.readline()[:-1].split(',')[1:]
-    # Each colname is like Lx_Sy_Dz; extract middle portion
-    stations = [s.split('_')[1] for s in colnames]
+def extract_process_flow(filename, chunksize=10000):
+    # Read just the first line to get column names
+    chunker = pd.read_csv(filename, index_col='Id', chunksize=1)
+    piece = chunker.__next__() 
 
-    # Initialize
+    # Each column name is like Lx_Sy_Dz; extract middle portion
+    stations = [s.split('_')[1] for s in piece.columns]
+    # Get just the unique station names
+    stations, icol = np.unique(np.array(stations), return_index=True)
+    # But get the original order back by sorting on icol
+    stations = stations[np.argsort(icol)]
+    icol = np.sort(icol)
+
+    # Set up chunker with full chunksize
+    chunker = pd.read_csv(filename, index_col='Id', chunksize=chunksize)
+
     ids = []
     pflows = []
-    # Process each line
-    reader = csv.reader(f)
-    for row in reader:
-        # Extract dates as floats with NaN when missing
-        dates = [(float(s) if (s != '') else np.nan) for s in row[1:]]
-        # Create temporary dataframe, dropna, drop_duplicates, sort by date
-        rowdf = pd.DataFrame({'station': stations, 'date': dates})
-        rowdf = rowdf.dropna().drop_duplicates().sort_values(by = 'date')
-        # Save ID and flow string
-        ids.append(int(row[0]))
-        pflows.append('-'.join(rowdf['station'].tolist()))
-        print(row[0], '\r', end = '')
-    f.close()
+    for piece in chunker:
+        for ii, row in piece.iterrows():
+            # Save index, which is "Id"
+            ids.append(ii)
+            # Drop missing, sort by value (date), and take the index (colname)
+            colorder = row[icol].dropna().sort_values().index
+            # Join station names in order of process flow and save string
+            pflows.append('-'.join([s.split('_')[1] for s in colorder]))
+            print(ii, '\r', end = '')
     print('')
     return pd.DataFrame({'Id': ids, 'PFlow': pflows})
 
