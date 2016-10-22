@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import csv
 
 def extract_column(filename, colname, chunksize=10000):
     chunker = pd.read_csv(filename, chunksize=chunksize)
@@ -38,11 +37,11 @@ def extract_process_flow(filename, chunksize=10000):
             colorder = row[icol].dropna().sort_values().index
             # Join station names in order of process flow and save string
             pflows.append('-'.join([s.split('_')[1] for s in colorder]))
-            print(ii, '\r', end = '')
+        print(ii, '\r', end = '')
     print('')
-    return pd.DataFrame({'Id': ids, 'PFlow': pflows})
+    return pd.DataFrame({'PFlow': pflows}, index=pd.Index(ids, name='Id'))
 
 df_train = extract_process_flow('../train_date.csv')
+df_train.to_csv('../train_pflow.csv')
 df_test = extract_process_flow('../test_date.csv')
-df_pflow = pd.concatenate([df_train, df_test], ignore_index = True)
-df_pflow.to_csv('../all_pflow.csv')
+df_test.to_csv('../test_pflow.csv')
