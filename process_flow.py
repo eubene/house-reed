@@ -1,16 +1,6 @@
 import numpy as np
 import pandas as pd
 
-def extract_column(filename, colname, chunksize=10000):
-    chunker = pd.read_csv(filename, chunksize=chunksize)
-    piece = chunker.__next__()
-    if colname not in piece.columns:
-        raise ValueError('not a valid column name', colname, filename)
-    col = piece[colname]
-    for piece in chunker:
-        col = pd.concat([col, piece[colname]])
-    return col
-
 def extract_process_flow(filename, chunksize=10000):
     # Read just the first line to get column names
     chunker = pd.read_csv(filename, index_col='Id', chunksize=1)
