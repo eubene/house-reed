@@ -1,1 +1,0 @@
-cut -f=1,4,5,6 -d=',' file.csv > newfile.csv
