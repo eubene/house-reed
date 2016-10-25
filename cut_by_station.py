@@ -15,7 +15,7 @@ for filename in filelist:
     piece = chunker.__next__()
 
     # Each column name is like Lx_Sy_Dz; extract middle portion
-    colstations = np.array([s.split('_')[1] for s in piece.columns])
+    colstations = np.array([s.split('_')[1] for s in piece.columns if '_' in s])
     # Get the unique station names
     stations, icol = np.unique(np.array(colstations), return_index=True)
     # But get the original order back by sorting on icol
