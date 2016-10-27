@@ -8,6 +8,7 @@ from subprocess import call
 indir = '../'
 outdir = '../bystation/'
 filelist = ['test_categorical.csv', 'test_date.csv', 'test_numeric.csv', 'train_categorical.csv', 'train_date.csv', 'train_numeric.csv']
+filelist = ['train_numeric.csv']
 
 for filename in filelist:
     # Read just the first line to get column names
