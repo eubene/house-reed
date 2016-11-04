@@ -24,20 +24,12 @@ df1 = loadboth_num('date', 'S24')
 df1.dropna(how='all', inplace=True)
 df1.fillna(0, inplace=True)
 dist = df1.apply(lambda col1: df1.apply(lambda col2: distance(col1, col2)))
-<<<<<<< HEAD
 dist.to_csv('../S24_dist.csv', header=True, index=False)
-=======
-dist.to_csv('../S24_dist.csv', header=False, index=False)
->>>>>>> de7853d7de0dcf53e280f29029827e99b29b331d
 del(df1)
 
 df2 = loadboth_num('date', 'S25')
 df2.dropna(how='all', inplace=True)
 df2.fillna(0, inplace=True)
 dist = df2.apply(lambda col1: df2.apply(lambda col2: distance(col1, col2)))
-<<<<<<< HEAD
 dist.to_csv('../S25_dist.csv', header=True, index=False)
-=======
-dist.to_csv('../S25_dist.csv', header=False, index=False)
->>>>>>> de7853d7de0dcf53e280f29029827e99b29b331d
 del(df2)

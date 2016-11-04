@@ -1,9 +1,8 @@
 
-s24.dist <- read.csv('../S24_dist.csv', header=FALSE)
-<<<<<<< HEAD
+s24.dist <- read.csv('../S24_dist.csv', header=TRUE)
 hc24 <- hclust(as.dist(s24.dist), method='complete')
 
-s25.dist <- read.csv('../S25_dist.csv', header=FALSE)
+s25.dist <- read.csv('../S25_dist.csv', header=TRUE)
 hc25 <- hclust(as.dist(s25.dist), method='complete')
 
 plot(hc24)
@@ -11,7 +10,6 @@ hc24.clusters <- cutree(hc24, 16)
 
 plot(hc25)
 hc25.clusters <- cutree(hc25, 17)
-=======
+
 hc <- hclust(as.dist(s24.dist), method='complete')
 plot(hc)
->>>>>>> de7853d7de0dcf53e280f29029827e99b29b331d
